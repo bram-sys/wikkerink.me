@@ -23,7 +23,7 @@
     "url": "https://wikkerink.me",
     "sameAs": [
       "https://instagram.com/i_am_not_bram",
-      "https://linkedin.com/in/bramwikkerink"
+      "https://www.linkedin.com/in/bram-wikkerink-28993566/"
     ],
     "jobTitle": ["Acteur", "Fractional CFO"],
     "worksFor": { "@type": "Organization", "name": "Zelfstandig" },
@@ -55,7 +55,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet"/>
-  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+  <script src="https://assets.calendly.com/assets/external/widget.js"></script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -808,6 +808,38 @@
       transform: scale(1.02);
     }
 
+    /* Foto carousel */
+    .photo-carousel {
+      position: relative;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab;
+    }
+    .carousel-track.dragging { cursor: grabbing; }
+    .carousel-track::-webkit-scrollbar { display: none; }
+    .carousel-track .carousel-img {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      height: 380px;
+      width: auto;
+      aspect-ratio: auto; /* override photo-thumb 3/4 */
+      object-fit: cover;
+      border-radius: 2px;
+      transform: none; /* geen scale-hover via grid */
+    }
+    .carousel-track .carousel-img:hover {
+      transform: none; /* geen scale in carousel — enkel filter */
+    }
+
     /* Editorial photo grid (Kunst) */
     .photo-grid-editorial {
       display: grid;
@@ -1099,6 +1131,7 @@
       position: fixed;
       top: 0; bottom: 0; left: 0; right: auto;
       width: calc(5.67 / 6.67 * 100vw); /* = acteur-paneel breedte (~85vw) */
+      pointer-events: none; /* overlay onderschept geen klikken → showreel klikbaar */
     }
     body.actor-active .actor-slides {
       transform: scale(1.10);
@@ -1370,10 +1403,17 @@
             <h2 class="detail-h2">In <em>beeld.</em></h2>
             <div class="detail-divider"></div>
             <span class="detail-label">Foto's</span>
-            <div class="photo-grid">
-              <img src="All pictures/Shoot Anna/Portretshoot-Bram-14.jpg" alt="Bram Wikkerink, acteur — portretfoto 1" class="photo-thumb" loading="lazy">
-              <img src="All pictures/Shoot Anna/Portretshoot-Bram-21.jpg" alt="Bram Wikkerink, acteur — portretfoto 2" class="photo-thumb" loading="lazy">
-              <img src="All pictures/Shoot Anna/Portretshoot-Bram-34.jpg" alt="Bram Wikkerink, acteur — portretfoto 3" class="photo-thumb" loading="lazy">
+            <div class="photo-carousel">
+              <div class="carousel-track" id="carousel-track">
+                <img src="fotos-carousel/Portretshoot-Bram-1.jpg"  alt="Bram Wikkerink, acteur — portretfoto 1" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/Portretshoot-Bram-6.jpg"  alt="Bram Wikkerink, acteur — portretfoto 2" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/Portretshoot-Bram-12.jpg" alt="Bram Wikkerink, acteur — portretfoto 3" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/Portretshoot-Bram-17.jpg" alt="Bram Wikkerink, acteur — portretfoto 4" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/Portretshoot-Bram-22.jpg" alt="Bram Wikkerink, acteur — portretfoto 5" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/Portretshoot-Bram-27.jpg" alt="Bram Wikkerink, acteur — portretfoto 6" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/Portretshoot-Bram-33.jpg" alt="Bram Wikkerink, acteur — portretfoto 7" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/Portretshoot-Bram-38.jpg" alt="Bram Wikkerink, acteur — portretfoto 8" class="photo-thumb carousel-img" loading="lazy">
+              </div>
             </div>
           </div>
 
@@ -1672,7 +1712,7 @@
             <h2 class="detail-h2 cfo-cta-h2">Laten we <em>kennismaken.</em></h2>
             <div class="detail-divider"></div>
             <div class="contact-links cfo-contact-links">
-              <a href="https://linkedin.com/in/bramwikkerink" target="_blank" class="btn" data-ga="contact_linkedin"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+              <a href="https://www.linkedin.com/in/bram-wikkerink-28993566/" target="_blank" class="btn" data-ga="contact_linkedin"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
               <button class="btn" id="calendly-cfo"><i class="fa-regular fa-calendar"></i> Plan een afspraak in</button>
               <a href="mailto:bram@wikkerink.me" class="btn" data-ga="contact_email_cfo"><i class="fa-regular fa-envelope"></i> E-mail</a>
             </div>
@@ -1706,6 +1746,12 @@
         const res = await fetch(url);
         const data = await res.json();
 
+        if (!res.ok) {
+          console.warn('GCal API fout', res.status, data?.error?.message);
+          container.innerHTML = '<p class="detail-text" style="opacity:0.5;">Agenda tijdelijk niet beschikbaar.</p>';
+          return;
+        }
+
         if (!data.items || data.items.length === 0) {
           container.innerHTML = '<p class="detail-text" style="opacity:0.5;">Geen geplande voorstellingen — volg me op <a href="https://instagram.com/i_am_not_bram" target="_blank" style="color:var(--yellow)">Instagram</a> voor updates.</p>';
           return;
@@ -1738,6 +1784,7 @@
             </div>`;
         }).join('');
       } catch (e) {
+        console.error('GCal fetch error:', e);
         container.innerHTML = '<p class="detail-text" style="opacity:0.5;">Agenda tijdelijk niet beschikbaar.</p>';
       }
     })();
@@ -1961,6 +2008,32 @@
         lightboxImg.alt = thumbs[currentThumb].alt;
       }
     });
+
+    /* ── Carousel drag-to-scroll ── */
+    const carouselTrack = document.getElementById('carousel-track');
+    if (carouselTrack) {
+      let isDown = false, startX, scrollLeft, hasDragged = false;
+      carouselTrack.addEventListener('mousedown', e => {
+        isDown = true; hasDragged = false;
+        carouselTrack.classList.add('dragging');
+        startX = e.pageX - carouselTrack.offsetLeft;
+        scrollLeft = carouselTrack.scrollLeft;
+      });
+      carouselTrack.addEventListener('mouseleave', () => { isDown = false; carouselTrack.classList.remove('dragging'); });
+      carouselTrack.addEventListener('mouseup',    () => { isDown = false; carouselTrack.classList.remove('dragging'); });
+      carouselTrack.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - carouselTrack.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        if (Math.abs(x - startX) > 5) hasDragged = true;
+        carouselTrack.scrollLeft = scrollLeft - walk;
+      });
+      /* voorkom lightbox-open na drag */
+      carouselTrack.addEventListener('click', e => {
+        if (hasDragged) { e.stopPropagation(); hasDragged = false; }
+      }, true);
+    }
 
     /* ── Calendly popup ── */
     const CALENDLY_URL = 'https://calendly.com/bram-wikkerink/30min';
