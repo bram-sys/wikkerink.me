@@ -811,34 +811,54 @@
     /* Foto carousel */
     .photo-carousel {
       position: relative;
-      overflow: hidden;
       margin-top: 16px;
     }
     .carousel-track {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       -ms-overflow-style: none;
       -webkit-overflow-scrolling: touch;
-      cursor: grab;
     }
-    .carousel-track.dragging { cursor: grabbing; }
     .carousel-track::-webkit-scrollbar { display: none; }
     .carousel-track .carousel-img {
       scroll-snap-align: start;
       flex-shrink: 0;
-      height: 380px;
-      width: auto;
-      aspect-ratio: auto; /* override photo-thumb 3/4 */
+      width: calc((100% - 16px) / 3); /* 3 zichtbaar: (100% - 2×8px) / 3 */
+      height: auto;
+      aspect-ratio: 2 / 3;
       object-fit: cover;
       border-radius: 2px;
-      transform: none; /* geen scale-hover via grid */
+      transform: none;
     }
     .carousel-track .carousel-img:hover {
-      transform: none; /* geen scale in carousel — enkel filter */
+      transform: none;
     }
+    /* Navigatiepijlen */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5;
+      background: rgba(26,26,31,0.75);
+      border: 1px solid rgba(232,197,71,0.45);
+      color: var(--yellow);
+      width: 34px; height: 34px;
+      border-radius: 2px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      transition: background 0.2s, border-color 0.2s;
+      line-height: 1;
+    }
+    .carousel-btn:hover {
+      background: rgba(232,197,71,0.18);
+      border-color: var(--yellow);
+    }
+    .carousel-prev { left: 0; }
+    .carousel-next { right: 0; }
 
     /* Editorial photo grid (Kunst) */
     .photo-grid-editorial {
@@ -1149,6 +1169,11 @@
     body.actor-active .actor {
       z-index: 3;
     }
+    /* Detail-sections (incl. showreel) expliciet boven de fixed overlay (z-index:1) */
+    body.actor-active .actor-detail {
+      position: relative;
+      z-index: 10;
+    }
     /* Inactieve strip ALTIJD zichtbaar boven de foto van de actieve kant */
     body.actor-active .cfo  { position: relative; z-index: 5; }
     body.cfo-active   .actor { position: relative; z-index: 5; }
@@ -1404,6 +1429,7 @@
             <div class="detail-divider"></div>
             <span class="detail-label">Foto's</span>
             <div class="photo-carousel">
+              <button class="carousel-btn carousel-prev" aria-label="Vorige foto">&#8592;</button>
               <div class="carousel-track" id="carousel-track">
                 <img src="fotos-carousel/Portretshoot-Bram-1.jpg"  alt="Bram Wikkerink, acteur — portretfoto 1" class="photo-thumb carousel-img" loading="lazy">
                 <img src="fotos-carousel/Portretshoot-Bram-6.jpg"  alt="Bram Wikkerink, acteur — portretfoto 2" class="photo-thumb carousel-img" loading="lazy">
@@ -1414,6 +1440,7 @@
                 <img src="fotos-carousel/Portretshoot-Bram-33.jpg" alt="Bram Wikkerink, acteur — portretfoto 7" class="photo-thumb carousel-img" loading="lazy">
                 <img src="fotos-carousel/Portretshoot-Bram-38.jpg" alt="Bram Wikkerink, acteur — portretfoto 8" class="photo-thumb carousel-img" loading="lazy">
               </div>
+              <button class="carousel-btn carousel-next" aria-label="Volgende foto">&#8594;</button>
             </div>
           </div>
 
@@ -2009,30 +2036,29 @@
       }
     });
 
-    /* ── Carousel drag-to-scroll ── */
+    /* ── Carousel navigatiepijlen ── */
     const carouselTrack = document.getElementById('carousel-track');
     if (carouselTrack) {
-      let isDown = false, startX, scrollLeft, hasDragged = false;
-      carouselTrack.addEventListener('mousedown', e => {
-        isDown = true; hasDragged = false;
-        carouselTrack.classList.add('dragging');
-        startX = e.pageX - carouselTrack.offsetLeft;
-        scrollLeft = carouselTrack.scrollLeft;
-      });
-      carouselTrack.addEventListener('mouseleave', () => { isDown = false; carouselTrack.classList.remove('dragging'); });
-      carouselTrack.addEventListener('mouseup',    () => { isDown = false; carouselTrack.classList.remove('dragging'); });
-      carouselTrack.addEventListener('mousemove', e => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - carouselTrack.offsetLeft;
-        const walk = (x - startX) * 1.5;
-        if (Math.abs(x - startX) > 5) hasDragged = true;
-        carouselTrack.scrollLeft = scrollLeft - walk;
-      });
-      /* voorkom lightbox-open na drag */
-      carouselTrack.addEventListener('click', e => {
-        if (hasDragged) { e.stopPropagation(); hasDragged = false; }
-      }, true);
+      const prevBtn = carouselTrack.closest('.photo-carousel').querySelector('.carousel-prev');
+      const nextBtn = carouselTrack.closest('.photo-carousel').querySelector('.carousel-next');
+
+      function carouselScrollBy(dir) {
+        const img = carouselTrack.querySelector('.carousel-img');
+        if (!img) return;
+        const step = img.offsetWidth + 8; /* breedte + gap */
+        carouselTrack.scrollBy({ left: dir * step, behavior: 'smooth' });
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', () => carouselScrollBy(-1));
+      if (nextBtn) nextBtn.addEventListener('click', () => carouselScrollBy(1));
+
+      /* Touch-swipe op mobiel */
+      let touchStartX = 0;
+      carouselTrack.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+      carouselTrack.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) carouselScrollBy(dx < 0 ? 1 : -1);
+      }, { passive: true });
     }
 
     /* ── Calendly popup ── */
@@ -2041,11 +2067,16 @@
       e.preventDefault();
       e.stopPropagation();
       track('calendly_open', { button_id: e.currentTarget.id });
-      if (typeof Calendly !== 'undefined') {
-        Calendly.initPopupWidget({ url: CALENDLY_URL });
-      } else {
-        /* fallback: Calendly widget nog niet geladen → open direct in nieuw tabblad */
-        window.open(CALENDLY_URL, '_blank', 'noopener');
+      try {
+        if (window.Calendly && typeof window.Calendly.initPopupWidget === 'function') {
+          window.Calendly.initPopupWidget({ url: CALENDLY_URL });
+        } else {
+          /* Fallback: direct openen in nieuw tabblad (popup-blocker-safe vanuit click) */
+          window.open(CALENDLY_URL, '_blank');
+        }
+      } catch(err) {
+        console.warn('Calendly fout:', err);
+        window.open(CALENDLY_URL, '_blank');
       }
     }
     ['calendly-cfo', 'calendly-actor'].forEach(function(id) {
@@ -2068,14 +2099,18 @@
       });
     }
 
-    /* ── Nieuwsbrief Brevo ──
-       Hoe activeren:
-       1. Ga naar Brevo → Contacts → Forms → maak een nieuw formulier
-       2. Kies "Embedded form", kopieer de action-URL (begint met https://sibforms.com/serve/...)
-       3. Vervang 'JOUW_BREVO_FORM_URL_HIER' hieronder door die URL
-       (Zolang de URL een placeholder is, werkt de UI maar worden aanmeldingen NIET opgeslagen)
+    /* ── Nieuwsbrief Brevo — via sibforms (veilig voor statische site) ──
+       API-key nooit in client-side code: GitHub blokkeert het + beveiligingsrisico.
+       Gebruik Brevo's form-URL (geen key nodig, double opt-in = GDPR-compliant):
+
+       STAP 1: Brevo → Contacts → Forms → "Maak nieuw formulier"
+       STAP 2: Kies "Embedded form" → stel double opt-in in (GDPR-tegel)
+       STAP 3: Kopieer de action-URL (begint met https://sibforms.com/serve/...)
+       STAP 4: Vervang 'JOUW_BREVO_FORM_URL' hieronder door die URL
+
+       Zolang de URL een placeholder is: UI werkt, aanmeldingen worden NIET opgeslagen.
     ── */
-    const BREVO_FORM_URL = 'JOUW_BREVO_FORM_URL_HIER';
+    const BREVO_FORM_URL = 'JOUW_BREVO_FORM_URL';
 
     ['newsletter-actor', 'newsletter-cfo'].forEach(function(formId) {
       const form = document.getElementById(formId);
@@ -2094,15 +2129,14 @@
 
         track('newsletter_signup', { panel: formId.includes('actor') ? 'actor' : 'cfo' });
 
-        if (BREVO_FORM_URL === 'JOUW_BREVO_FORM_URL_HIER') {
-          /* Placeholder actief: toon success UI maar sla niets op */
+        if (BREVO_FORM_URL === 'JOUW_BREVO_FORM_URL') {
+          /* Placeholder actief — toon UI maar sla niets op */
           if (row) row.style.display = 'none';
           if (successEl) successEl.classList.add('visible');
           return;
         }
 
-        /* Verstuur naar Brevo via no-cors (Brevo's sibforms accepteert geen CORS-headers,
-           maar verwerkt de POST wél — optimistisch succes tonen is de standaard aanpak) */
+        /* POST naar Brevo sibforms (no-cors: Brevo verwerkt het, antwoord is opaque) */
         const data = new FormData();
         data.append('EMAIL', email);
         fetch(BREVO_FORM_URL, { method: 'POST', mode: 'no-cors', body: data })
