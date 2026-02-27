@@ -884,6 +884,32 @@
     .stats-block--cfo .cred-num  { font-size: 24px; color: var(--blue); }
     .stats-block--cfo .cred-label { color: rgba(48,50,61,0.55); }
 
+    /* Casting specs grid */
+    .casting-specs {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px 22px;
+      margin-top: 22px;
+      align-items: start;
+    }
+    .spec-key {
+      font-family: var(--font-m);
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(232,197,71,0.45);
+      padding-top: 5px; white-space: nowrap;
+    }
+    .spec-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .spec-tag {
+      font-family: var(--font-m);
+      font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase;
+      color: var(--yellow);
+      border: 1px solid rgba(232,197,71,0.35);
+      padding: 4px 10px;
+      border-radius: 1px;
+    }
+
     /* Actor contact — gecentreerd */
     #acteur-contact { text-align: center; }
     #acteur-contact .contact-links { justify-content: center; }
@@ -1356,9 +1382,31 @@
             <h2 class="detail-h2">Geschoold.<br><em>Bevlogen.</em></h2>
             <div class="detail-divider"></div>
             <span class="detail-label">Over mij</span>
-            <div class="stats-block">
-              <div class="cred-item"><span class="cred-num">185</span><span class="cred-label">Centimeter</span></div>
-              <div class="cred-item"><span class="cred-num">Bariton</span><span class="cred-label">Stem</span></div>
+            <div class="casting-specs">
+              <span class="spec-key">Lengte</span>
+              <div class="spec-tags"><span class="spec-tag">185 cm</span></div>
+
+              <span class="spec-key">Stem</span>
+              <div class="spec-tags"><span class="spec-tag">Bariton</span></div>
+
+              <span class="spec-key">Haar</span>
+              <div class="spec-tags"><span class="spec-tag">Donkerbruin</span></div>
+
+              <span class="spec-key">Ogen</span>
+              <div class="spec-tags"><span class="spec-tag">Donkerbruin</span></div>
+
+              <span class="spec-key">Talen</span>
+              <div class="spec-tags">
+                <span class="spec-tag">Nederlands</span>
+                <span class="spec-tag">Engels</span>
+                <span class="spec-tag">Duits</span>
+              </div>
+
+              <span class="spec-key">Instrumenten</span>
+              <div class="spec-tags">
+                <span class="spec-tag">Piano</span>
+                <span class="spec-tag">Gitaar</span>
+              </div>
             </div>
             <p class="detail-text" style="margin-top:20px;">
               Fysieke, energieke en expressieve acteur met een sterke podiumaanwezigheid, grote liefde voor muzikaliteit en goed gevoel voor komische timing. Werkt snel, precies en met spelplezier. Gewend om in uiteenlopende stijlen te spelen. Teamspeler, betrouwbaar, altijd gericht op het versterken van het geheel.
@@ -1646,7 +1694,7 @@
   <script>
     /* ── Google Calendar ── */
     (async function loadGCal() {
-      const GCAL_API_KEY = 'JOUW_GCAL_API_KEY'; // Vervang met jouw beperkte sleutel — zie Google Cloud Console
+      const GCAL_API_KEY = 'AIzaSyCY3g5p1ukFeJn-88xzf4AXj7tmxecAtE4';
       const GCAL_ID = 'c_995952a5d7ec34562d7d4d2209344159374e25447651dd8c8500a4c847acf12a@group.calendar.google.com';
       const container = document.getElementById('gcal-events');
       if (!container) return;
