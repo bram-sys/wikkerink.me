@@ -54,9 +54,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet"/>
-  <script src="https://assets.calendly.com/assets/external/widget.js"></script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -742,39 +739,9 @@
       overflow: hidden;
       border-radius: 3px;
     }
-    .showreel iframe,
-    .showreel-thumb {
+    .showreel iframe {
       position: absolute; inset: 0;
       width: 100%; height: 100%; border: 0;
-    }
-    .showreel-thumb { cursor: pointer; display: block; }
-    .showreel-thumb img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-      transition: transform 0.45s;
-    }
-    .showreel-thumb:hover img { transform: scale(1.04); }
-    .play-btn {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 64px; height: 64px; border-radius: 50%;
-      background: rgba(232,197,71,0.90); color: var(--dark);
-      border: none; cursor: pointer;
-      font-size: 20px; padding-left: 4px;
-      display: flex; align-items: center; justify-content: center;
-      transition: background .2s, transform .2s;
-      pointer-events: none;
-    }
-    .showreel-thumb:hover .play-btn {
-      background: var(--yellow);
-      transform: translate(-50%, -50%) scale(1.14);
-    }
-    .showreel iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
     }
 
     /* Actor-varianten van gedeelde classes */
@@ -809,56 +776,51 @@
     }
 
     /* Foto carousel */
-    .photo-carousel {
-      position: relative;
-      margin-top: 16px;
-    }
+    .photo-carousel { position: relative; margin-top: 16px; }
     .carousel-track {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
       scrollbar-width: none;
       -ms-overflow-style: none;
-      -webkit-overflow-scrolling: touch;
     }
     .carousel-track::-webkit-scrollbar { display: none; }
-    .carousel-track .carousel-img {
-      scroll-snap-align: start;
+    .carousel-img {
       flex-shrink: 0;
-      width: calc((100% - 16px) / 3); /* 3 zichtbaar: (100% - 2×8px) / 3 */
-      height: auto;
+      width: calc(33.333% - 5.333px);
       aspect-ratio: 2 / 3;
       object-fit: cover;
       border-radius: 2px;
-      transform: none;
+      cursor: pointer;
+      transition: filter 0.3s;
+      filter: grayscale(0.08);
     }
-    .carousel-track .carousel-img:hover {
-      transform: none;
-    }
+    .carousel-img:hover { filter: grayscale(0); }
     /* Navigatiepijlen */
     .carousel-btn {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      z-index: 5;
-      background: rgba(26,26,31,0.75);
-      border: 1px solid rgba(232,197,71,0.45);
+      z-index: 20;
+      background: rgba(26,26,31,0.85);
+      border: 1px solid rgba(232,197,71,0.55);
       color: var(--yellow);
-      width: 34px; height: 34px;
+      width: 36px; height: 36px;
       border-radius: 2px;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
+      font-size: 18px;
       transition: background 0.2s, border-color 0.2s;
       line-height: 1;
+      pointer-events: all;
     }
     .carousel-btn:hover {
-      background: rgba(232,197,71,0.18);
+      background: rgba(232,197,71,0.22);
       border-color: var(--yellow);
     }
-    .carousel-prev { left: 0; }
-    .carousel-next { right: 0; }
+    .carousel-prev { left: 4px; }
+    .carousel-next { right: 4px; }
 
     /* Editorial photo grid (Kunst) */
     .photo-grid-editorial {
@@ -1387,11 +1349,11 @@
     <!-- ACTOR -->
     <div class="panel actor" aria-label="Acteur portfolio — Bram Wikkerink">
       <div class="actor-slides">
-        <div class="actor-slide" style="background-image:url('All pictures/Shoot Anna/Portretshoot-Bram-37.jpg')"></div>
-        <div class="actor-slide" style="background-image:url('All pictures/Shoot Anna/Portretshoot-Bram-12.jpg')"></div>
-        <div class="actor-slide" style="background-image:url('All pictures/Shoot Anna/Portretshoot-Bram-22.jpg')"></div>
-        <div class="actor-slide" style="background-image:url('All pictures/Shoot Anna/Portretshoot-Bram-38.jpg')"></div>
-        <div class="actor-slide" style="background-image:url('All pictures/Shoot Anna/Portretshoot-Bram-2.jpg')"></div>
+        <div class="actor-slide" style="background-image:url('fotos-carousel/hero-portret-1.jpg')"></div>
+        <div class="actor-slide" style="background-image:url('fotos-carousel/hero-portret-2.jpg')"></div>
+        <div class="actor-slide" style="background-image:url('fotos-carousel/hero-portret-3.jpg')"></div>
+        <div class="actor-slide" style="background-image:url('fotos-carousel/hero-portret-4.jpg')"></div>
+        <div class="actor-slide" style="background-image:url('fotos-carousel/hero-portret-5.jpg')"></div>
       </div>
       <div class="actor-overlay"></div>
       <div class="actor-glow"></div>
@@ -1429,18 +1391,18 @@
             <div class="detail-divider"></div>
             <span class="detail-label">Foto's</span>
             <div class="photo-carousel">
-              <button class="carousel-btn carousel-prev" aria-label="Vorige foto">&#8592;</button>
+              <button class="carousel-btn carousel-prev" onclick="cslide(-1)" aria-label="Vorige foto">&#8592;</button>
               <div class="carousel-track" id="carousel-track">
-                <img src="fotos-carousel/Portretshoot-Bram-1.jpg"  alt="Bram Wikkerink, acteur — portretfoto 1" class="photo-thumb carousel-img" loading="lazy">
-                <img src="fotos-carousel/Portretshoot-Bram-6.jpg"  alt="Bram Wikkerink, acteur — portretfoto 2" class="photo-thumb carousel-img" loading="lazy">
-                <img src="fotos-carousel/Portretshoot-Bram-12.jpg" alt="Bram Wikkerink, acteur — portretfoto 3" class="photo-thumb carousel-img" loading="lazy">
-                <img src="fotos-carousel/Portretshoot-Bram-17.jpg" alt="Bram Wikkerink, acteur — portretfoto 4" class="photo-thumb carousel-img" loading="lazy">
-                <img src="fotos-carousel/Portretshoot-Bram-22.jpg" alt="Bram Wikkerink, acteur — portretfoto 5" class="photo-thumb carousel-img" loading="lazy">
-                <img src="fotos-carousel/Portretshoot-Bram-27.jpg" alt="Bram Wikkerink, acteur — portretfoto 6" class="photo-thumb carousel-img" loading="lazy">
-                <img src="fotos-carousel/Portretshoot-Bram-33.jpg" alt="Bram Wikkerink, acteur — portretfoto 7" class="photo-thumb carousel-img" loading="lazy">
-                <img src="fotos-carousel/Portretshoot-Bram-38.jpg" alt="Bram Wikkerink, acteur — portretfoto 8" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/315123.jpg" alt="Bram Wikkerink — foto" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/622556.jpg" alt="Bram Wikkerink — foto" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/167685.jpg" alt="Bram Wikkerink — foto" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/533154.jpg" alt="Bram Wikkerink — foto" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/304689.jpg" alt="Bram Wikkerink — foto" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/832446.jpg" alt="Bram Wikkerink — foto" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/571769.jpg" alt="Bram Wikkerink — foto" class="photo-thumb carousel-img" loading="lazy">
+                <img src="fotos-carousel/822506.jpg" alt="Bram Wikkerink — foto" class="photo-thumb carousel-img" loading="lazy">
               </div>
-              <button class="carousel-btn carousel-next" aria-label="Volgende foto">&#8594;</button>
+              <button class="carousel-btn carousel-next" onclick="cslide(1)" aria-label="Volgende foto">&#8594;</button>
             </div>
           </div>
 
@@ -1479,10 +1441,12 @@
               Fysieke, energieke en expressieve acteur met een sterke podiumaanwezigheid, grote liefde voor muzikaliteit en goed gevoel voor komische timing. Werkt snel, precies en met spelplezier. Gewend om in uiteenlopende stijlen te spelen. Teamspeler, betrouwbaar, altijd gericht op het versterken van het geheel.
             </p>
             <div class="showreel">
-              <div class="showreel-thumb" id="showreel-thumb" data-video="DO5Gdjp6F2U">
-                <img src="https://img.youtube.com/vi/DO5Gdjp6F2U/maxresdefault.jpg" alt="Showreel Bram Wikkerink" loading="lazy">
-                <button class="play-btn" aria-label="Showreel afspelen"><i class="fa-solid fa-play"></i></button>
-              </div>
+              <iframe
+                src="https://www.youtube.com/embed/DO5Gdjp6F2U?rel=0&modestbranding=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                title="Showreel Bram Wikkerink">
+              </iframe>
             </div>
           </div>
 
@@ -1568,7 +1532,7 @@
             <div class="contact-links">
               <a href="https://instagram.com/i_am_not_bram" target="_blank" class="btn" data-ga="contact_instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
               <a href="mailto:bram@wikkerink.me" class="btn" data-ga="contact_email_actor"><i class="fa-regular fa-envelope"></i> E-mail</a>
-              <button class="btn" id="calendly-actor"><i class="fa-regular fa-calendar"></i> Plan een sessie</button>
+              <a href="https://calendly.com/bram-wikkerink/30min" target="_blank" class="btn" data-ga="contact_calendly_actor"><i class="fa-regular fa-calendar"></i> Plan een sessie</a>
               <a href="Bram_Wikkerink_CV.pdf" download class="btn" data-ga="contact_cv_download"><i class="fa-solid fa-download"></i> Download CV</a>
             </div>
           </div>
@@ -1740,7 +1704,7 @@
             <div class="detail-divider"></div>
             <div class="contact-links cfo-contact-links">
               <a href="https://www.linkedin.com/in/bram-wikkerink-28993566/" target="_blank" class="btn" data-ga="contact_linkedin"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
-              <button class="btn" id="calendly-cfo"><i class="fa-regular fa-calendar"></i> Plan een afspraak in</button>
+              <a href="https://calendly.com/bram-wikkerink/30min" target="_blank" class="btn" data-ga="contact_calendly_cfo"><i class="fa-regular fa-calendar"></i> Plan een afspraak in</a>
               <a href="mailto:bram@wikkerink.me" class="btn" data-ga="contact_email_cfo"><i class="fa-regular fa-envelope"></i> E-mail</a>
             </div>
           </div>
@@ -2036,67 +2000,13 @@
       }
     });
 
-    /* ── Carousel navigatiepijlen ── */
-    const carouselTrack = document.getElementById('carousel-track');
-    if (carouselTrack) {
-      const prevBtn = carouselTrack.closest('.photo-carousel').querySelector('.carousel-prev');
-      const nextBtn = carouselTrack.closest('.photo-carousel').querySelector('.carousel-next');
-
-      function carouselScrollBy(dir) {
-        const img = carouselTrack.querySelector('.carousel-img');
-        if (!img) return;
-        const step = img.offsetWidth + 8; /* breedte + gap */
-        carouselTrack.scrollBy({ left: dir * step, behavior: 'smooth' });
-      }
-
-      if (prevBtn) prevBtn.addEventListener('click', () => carouselScrollBy(-1));
-      if (nextBtn) nextBtn.addEventListener('click', () => carouselScrollBy(1));
-
-      /* Touch-swipe op mobiel */
-      let touchStartX = 0;
-      carouselTrack.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-      carouselTrack.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) > 40) carouselScrollBy(dx < 0 ? 1 : -1);
-      }, { passive: true });
-    }
-
-    /* ── Calendly popup ── */
-    const CALENDLY_URL = 'https://calendly.com/bram-wikkerink/30min';
-    function openCalendly(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      track('calendly_open', { button_id: e.currentTarget.id });
-      try {
-        if (window.Calendly && typeof window.Calendly.initPopupWidget === 'function') {
-          window.Calendly.initPopupWidget({ url: CALENDLY_URL });
-        } else {
-          /* Fallback: direct openen in nieuw tabblad (popup-blocker-safe vanuit click) */
-          window.open(CALENDLY_URL, '_blank');
-        }
-      } catch(err) {
-        console.warn('Calendly fout:', err);
-        window.open(CALENDLY_URL, '_blank');
-      }
-    }
-    ['calendly-cfo', 'calendly-actor'].forEach(function(id) {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('click', openCalendly);
-    });
-
-    /* ── Showreel thumbnail → autoplay iframe ── */
-    const showreelThumb = document.getElementById('showreel-thumb');
-    if (showreelThumb) {
-      showreelThumb.addEventListener('click', function() {
-        track('showreel_play');
-        const videoId = this.dataset.video;
-        const iframe = document.createElement('iframe');
-        iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&modestbranding=1';
-        iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
-        iframe.allowFullscreen = true;
-        iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
-        this.replaceWith(iframe);
-      });
+    /* ── Foto carousel ── */
+    function cslide(dir) {
+      var t = document.getElementById('carousel-track');
+      if (!t) return;
+      var img = t.querySelector('.carousel-img');
+      if (!img) return;
+      t.scrollLeft += dir * (img.offsetWidth + 8);
     }
 
     /* ── Nieuwsbrief Brevo — via sibforms (veilig voor statische site) ──
@@ -2110,7 +2020,7 @@
 
        Zolang de URL een placeholder is: UI werkt, aanmeldingen worden NIET opgeslagen.
     ── */
-    const BREVO_FORM_URL = 'JOUW_BREVO_FORM_URL';
+    const BREVO_FORM_URL = 'https://652a8d59.sibforms.com/serve/MUIFAGgMdstBJ1FT7Qaw8wWV0vWXpgQXiywFW1DH69a1c0e64708dfa1d04c444d';
 
     ['newsletter-actor', 'newsletter-cfo'].forEach(function(formId) {
       const form = document.getElementById(formId);
